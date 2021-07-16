@@ -321,4 +321,3 @@ ingress:
   # -- ingress annotations
   annotations: {}
     # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
