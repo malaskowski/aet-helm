@@ -12,7 +12,7 @@ This chart bootstraps an [AET](https://github.com/wttech/aet) deployment on a [K
 ## TL;DR
 ```
 helm repo add aet-chart https://malaskowski.github.io/aet-helm
-helm install my-aet aet-chart/aet -n aet --create-namespace
+helm install --set ingress.enabled=true my-aet aet-chart/aet -n aet --create-namespace
 ```
 
 ## Prerequisites
@@ -21,9 +21,9 @@ helm install my-aet aet-chart/aet -n aet --create-namespace
 - Add Helm repository with `helm repo add aet-chart https://malaskowski.github.io/aet-helm`
 
 ## Installing the Chart
-To instal the chart with the release name `my-aet`, run:
+To instal the chart with the release name `my-aet` using existing domain that points to your Kubernetes cluster, run:
 ```
-helm install my-aet aet-chart/aet -n aet --create-namespace
+helm install --set ingress.enabled=true --set ingress.host=my-aet-domain.com my-aet aet-chart/aet -n aet --create-namespace
 ```
 
 This command deploys AET on Kubernetes cluster with the default configuration using `aet` namespace.
@@ -36,6 +36,9 @@ The [Parameters](#parameters) section lists the parameters that can be configure
 > ```
 >
 > Your AET instance domain should be `http://aet-127.0.0.1.nip.io/`.
+>
+> You may use `watch -n 1 kubectl get all,ingress --namespace aet` command to watch progress of your instance setup.
+> When all pods are in state `Running` you may start using your instance (it usually takes about 2-3 minutes from the start).
 
 ## Uninstalling the Chart
 To uninstall/delete the my-aet deployment:
