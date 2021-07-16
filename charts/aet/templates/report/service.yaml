@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-report
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-report
+    app.kubernetes.io/instance: {{ .Release.Name }}-report
+    app.kubernetes.io/version: "2.4"
+    app.kubernetes.io/aet-version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: httpd
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-report
+    app.kubernetes.io/instance: {{ .Release.Name }}-report
+  ports:
+    - port: {{ .Values.report.ports.service }}
+      targetPort: 80

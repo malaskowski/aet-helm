@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-hub
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-hub
+    app.kubernetes.io/instance: {{ .Release.Name }}-hub
+    app.kubernetes.io/version: 3.14.0-arsenic
+    app.kubernetes.io/component: selenium-grid
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "aet-helm.name" . }}-hub
+      app.kubernetes.io/instance: {{ .Release.Name }}-hub
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "aet-helm.name" . }}-hub
+        app.kubernetes.io/instance: {{ .Release.Name }}-hub
+    spec:
+      containers:
+        - name: hub
+          image: {{ .Values.sgrid.hub.image.repository }}:{{ .Values.sgrid.hub.image.tag }}
+          resources:
+            requests:
+              memory: {{ .Values.sgrid.hub.resources.requests.memory }}
+              cpu: {{ .Values.sgrid.hub.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.sgrid.hub.resources.limits.memory }}
+              cpu: {{ .Values.sgrid.hub.resources.limits.cpu }}
+          ports:
+            - containerPort: 4444
+          {{- if .Values.sgrid.hub.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.sgrid.hub.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.sgrid.hub.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.sgrid.hub.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.sgrid.hub.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.sgrid.hub.livenessProbe.successThreshold }}
+            httpGet:
+              path: /wd/hub/status
+              port: 4444
+          {{- end }}
+          {{- if .Values.sgrid.hub.readinessProbe.enabled }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.sgrid.hub.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.sgrid.hub.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.sgrid.hub.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.sgrid.hub.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.sgrid.hub.readinessProbe.successThreshold }}
+            httpGet:
+              path: /wd/hub/status
+              port: 4444
+          {{- end }}

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-browsermob
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-browsermob
+    app.kubernetes.io/instance: {{ .Release.Name }}-browsermob
+    app.kubernetes.io/version: 2.1.4
+    app.kubernetes.io/component: proxy-server
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-browsermob
+    app.kubernetes.io/instance: {{ .Release.Name }}-browsermob
+  ports:
+    - name: 'api'
+      port: {{ .Values.browsermob.ports.apiPort }}
+      targetPort: 8080
+    {{ include "aet-helm.proxyServicePortsList" . | nindent 4 }}

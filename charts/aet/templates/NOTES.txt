@@ -1,0 +1,13 @@
+Thank you for installing {{ .Chart.Name }}.
+Your release is named {{ .Release.Name }}.
+
+Your AET instance is starting...
+
+{{- if .Values.ingress.enabled }}
+When ready (give it ~2 minutes), your local AET instance will be available at:{{ ` ` }}
+{{- if .Values.ingress.host -}}
+ https://{{ .Values.ingress.host }}
+{{- else -}}
+ http://{{ .Values.ingress.localDnsMapping }}
+{{- end -}}
+{{- end }}

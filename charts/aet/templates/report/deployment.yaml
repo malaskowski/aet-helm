@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-report
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-report
+    app.kubernetes.io/instance: {{ .Release.Name }}-report
+    app.kubernetes.io/version: "2.4"
+    app.kubernetes.io/aet-version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: httpd
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "aet-helm.name" . }}-report
+      app.kubernetes.io/instance: {{ .Release.Name }}-report
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "aet-helm.name" . }}-report
+        app.kubernetes.io/instance: {{ .Release.Name }}-report
+    spec:
+      containers:
+        - name: report
+          image: {{ .Values.report.image.repository }}:{{ .Values.report.image.tag | default .Values.aetDockerTag }}
+          resources:
+            requests:
+              memory: {{ .Values.report.resources.requests.memory }}
+              cpu: {{ .Values.report.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.report.resources.limits.memory }}
+              cpu: {{ .Values.report.resources.limits.cpu }}
+          ports:
+            - containerPort: 80
+          {{- if .Values.report.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.report.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.report.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.report.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.report.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.report.livenessProbe.successThreshold }}
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+          {{- end }}
+          {{- if .Values.report.readinessProbe.enabled }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.report.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.report.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.report.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.report.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.report.readinessProbe.successThreshold }}
+            httpGet:
+              path: /report.html
+              port: 80
+              scheme: HTTP
+          {{- end }}

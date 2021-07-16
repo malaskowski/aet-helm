@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-karaf-configs
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-karaf
+    app.kubernetes.io/instance: {{ .Release.Name }}-karaf
+    app.kubernetes.io/version: 4.2.0
+    app.kubernetes.io/aet-version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: osgi-runtime
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+data:
+  com.cognifide.aet.cleaner.CleanerScheduler-main.cfg: |
+    schedule={{ .Values.karaf.configs.cleaner.schedule }}
+    keepNVersions={{ .Values.karaf.configs.cleaner.keepNVersions }}
+    removeOlderThan={{ .Values.karaf.configs.cleaner.removeOlderThan }}
+    dryRun={{ .Values.karaf.configs.cleaner.dryRun }}
+  com.cognifide.aet.proxy.RestProxyManager.cfg: |
+    server={{ include "aet-helm.fullname" . }}-browsermob
+    port={{ .Values.browsermob.ports.apiPort }}
+  com.cognifide.aet.queues.DefaultJmsConnection.cfg: |
+    url=failover:tcp://{{ include "aet-helm.fullname" . }}-activemq:{{ .Values.activemq.ports.brokerServicePort }}
+    username=admin
+    password=admin
+  com.cognifide.aet.rest.helpers.ReportConfigurationManager.cfg: |
+    reportDomain=http://
+{{- if .Values.ingress.host -}}
+{{ .Values.ingress.host }}
+{{- else -}}
+{{ .Values.ingress.localDnsMapping }}
+{{- end }}
+  com.cognifide.aet.runner.MessagesManager.cfg: |
+    jxmUrl=service:jmx:rmi:///jndi/rmi://{{ include "aet-helm.fullname" . }}-activemq:{{ .Values.activemq.ports.jmxPort }}/jmxrmi
+  com.cognifide.aet.runner.RunnerConfiguration.cfg: |
+    ft={{ .Values.karaf.configs.runner.ft }}
+    mttl={{ .Values.karaf.configs.runner.mttl }}
+    urlPackageSize={{ .Values.karaf.configs.runner.urlPackageSize }}
+    maxMessagesInCollectorQueue={{ .Values.karaf.configs.runner.maxMessagesInCollectorQueue }}
+    maxConcurrentSuitesCount={{ .Values.karaf.configs.runner.maxConcurrentSuitesCount }}
+  com.cognifide.aet.vs.mongodb.MongoDBClient.cfg: |
+    mongoURI=mongodb://{{ include "aet-helm.fullname" . }}-mongodb
+    allowAutoCreate=true
+  com.cognifide.aet.worker.drivers.chrome.ChromeWebDriverFactory.cfg: |
+    name = "chrome"
+    seleniumGridUrl = "http://{{ include "aet-helm.fullname" . }}-hub:{{ .Values.sgrid.hub.ports.service }}/wd/hub"
+    chromeOptions = [ \
+      "--disable-plugins", \
+      "--headless", \
+      "--hide-scrollbars", \
+      "--disable-gpu", \
+      "start-maximized", \
+      "enable-automation", \
+      "--no-sandbox", \
+      "--disable-infobars", \
+      "--disable-dev-shm-usage", \
+      "--disable-browser-side-navigation", \
+      "--dns-prefetch-disable", \
+      ]
+  com.cognifide.aet.worker.listeners.WorkersListenersService.cfg: |
+    collectorPrefetchSize={{ .Values.karaf.configs.workers.collectorPrefetchSize }}
+    collectorInstancesNo={{ .Values.karaf.configs.workers.collectorInstancesNo }}
+    comparatorPrefetchSize={{ .Values.karaf.configs.workers.comparatorPrefetchSize }}
+    comparatorInstancesNo={{ .Values.karaf.configs.workers.comparatorInstancesNo }}

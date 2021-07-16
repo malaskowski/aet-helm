@@ -1,0 +1,324 @@
+# Default values for aet-helm.
+# This is a YAML-formatted file.
+
+# -- default version of AET images used to run the instance
+aetDockerTag: 0.14.0
+
+# ActiveMQ configuration
+activemq:
+  image:
+    # -- image repository for ActiveMQ
+    repository: skejven/aet_activemq
+    # -- ActiveMQ image tag, overrides `aetDockerTag`
+    tag: 
+  resources:
+    requests:
+      # -- ActiveMQ request memory resources
+      memory: 120Mi
+      # -- ActiveMQ request cpu resources
+      cpu: 100m
+    limits:
+      # -- ActiveMQ limits memory resources
+      memory: 150Mi
+      # -- ActiveMQ limits cpu resources
+      cpu: 150m
+  ports:
+    # -- Port ActiveMQ admin panel will be exposed at
+    adminPanelPort: 8161
+    # -- Port at which ActiveMQ exposes JMX that is used to purge queues
+    jmxPort: 11199
+    # -- Port at which ActiveMQ exposes its broker service
+    brokerServicePort: 61616
+  livenessProbe:
+    # -- enables ActiveMQ pods liveness probe
+    enabled: true
+    initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  readinessProbe:
+    # -- enables ActiveMQ pods readiness probe
+    enabled: true
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+
+# Browsermob Proxy configuration
+browsermob:
+  image:
+    # -- image repository for Browsermob Proxy
+    repository: skejven/aet_browsermob
+    # -- Browsermob image tag, overrides `aetDockerTag`
+    tag: 
+  resources:
+    requests:
+      # -- Browsermob request memory resources
+      memory: 200Mi
+      # -- Browsermob request cpu resources
+      cpu: 100m
+    limits:
+      # -- Browsermob limits memory resources
+      memory: 300Mi
+      # -- Browsermob limits cpu resources
+      cpu: 500m
+  # -- Base port for the proxy range to start
+  proxyBasePort: 8281
+  # -- Size of the proxy, when proxyBasePort is 8281 and size set to 50, proxy will use ports range 8281-8330
+  proxySize: 50
+  ports:
+    # -- Port with Browsermob API exposed
+    apiPort: 8080
+  livenessProbe:
+    # -- enables Browsermob pods liveness probe
+    enabled: true
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  readinessProbe:
+    # -- enables Browsermob pods readiness probe
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+
+# Apache Karaf configuration
+karaf:
+  image:
+    # -- image repository for Apache Karaf
+    repository: skejven/aet_karaf
+    # -- Karaf image tag, overrides `aetDockerTag`
+    tag: 
+  resources:
+    requests:
+      # -- Karaf request memory resources
+      memory: 1500Mi
+      # -- Karaf request cpu resources
+      cpu: 750m
+    limits:
+      # -- Karaf limits memory resources
+      memory: 2000Mi
+      # -- Karaf limits cpu resources
+      cpu: 1000m
+  env:
+    javaMaxMem: 2048m
+  ports:
+    # -- Port with Karaf console and endpoints
+    osgi: 8181
+  livenessProbe:
+    # -- enables Karaf pods liveness probe
+    enabled: true
+    initialDelaySeconds: 120
+    periodSeconds: 30
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  readinessProbe:
+    # -- enables Karaf pods readiness probe
+    enabled: true
+    initialDelaySeconds: 120
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  initContainers:
+    # -- time after which init checks for hub, mongo and activemq will timeout if not found in network
+    initTimeoutSeconds: 120
+    # -- enables waiting for Selenium Grid Hub to be available before running the main Karaf conainer
+    waitForHub: true
+    # -- enables waiting for MongoDB to be available before running the main Karaf conainer
+    waitForMongo: true
+    # -- enables waiting for ActiveMq to be available before running the main Karaf conainer
+    waitForActivemq: true
+  configs:
+    # AET cleaner configs. Read more [here](https://github.com/wttech/aet/wiki/Cleaner).
+    cleaner:
+      schedule: 0 0 22 ? * *
+      keepNVersions: 150
+      removeOlderThan: 4
+      dryRun: false
+    # AET runner configs. Read more [here](https://github.com/wttech/aet/wiki/Runner).
+    runner:
+      # -- Time in seconds, after which suite processing will be interrupted if no notification was received in duration of this parameter. That means if Runner will be not updated by any collection or comparison result in that time it will decide to force stop suite processing.
+      ft: 120
+      # -- Time in seconds after which messages will be thrown out of queues.
+      mttl: 300
+      # -- Defines how many urls are being sent in one message. Do not change this value unless you are absolutly certain you know what you do :).
+      urlPackageSize: 1
+      # -- Defines the maximum amount of messages in the collector queue. This should be equal the total number of browser sessions provided by Selenium Grid and collector instances.
+      maxMessagesInCollectorQueue: 4
+      # -- Defines the maximum number of suites processed concurrently byt the Runner. If more suites will come to the system, they will be scheduled for later processing.
+      maxConcurrentSuitesCount: 2
+    database:
+      # -- allows creating new databases by AET (no need to create them manually first, including indexes)
+      allowAutoCreate: true
+    ## AET workers config. Read more [here](https://github.com/wttech/aet/wiki/Worker).
+    workers:
+      ## -- defines prefetch limit for AET collectors. Do not change this value unless you are absolutly certain you know what you do :).
+      collectorPrefetchSize: 1
+      ## -- defines number of AET collector workers. This should be equal the total number of browser sessions provided by Selenium Grid.
+      collectorInstancesNo: 4
+      ## -- defines prefetch limit for AET comparators. Do not change this value unless you are absolutly certain you know what you do :).
+      comparatorPrefetchSize: 1
+      ## - defines number of AET comparators. This sets the capacity of producing comparison reports and impacts resources consumed by Karaf.
+      comparatorInstancesNo: 5
+
+# Reports configuration
+report:
+  image:
+    # -- image repository for Reports
+    repository: skejven/aet_report
+    # -- Reports image tag, overrides `aetDockerTag`
+    tag:
+  resources:
+    requests:
+      # -- Reports request memory resources
+      memory: 50Mi
+      # -- Reports request cpu resources
+      cpu: 50m
+    limits:
+      # -- Reports limits memory resources
+      memory: 100Mi
+      # -- Reports limits cpu resources
+      cpu: 100m
+  ports:
+    # -- Port Reports will be served at
+    service: 80
+  livenessProbe:
+    # -- enables Reports pods liveness probe
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 30
+    timeoutSeconds: 1
+    failureThreshold: 2
+    successThreshold: 1
+  readinessProbe:
+    # -- enables Reports pods readiness probe
+    enabled: true
+    initialDelaySeconds: 15
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 2
+    successThreshold: 1
+
+
+# Selenium Grid configuration
+sgrid:
+  hub:
+    image:
+      repository: selenium/hub
+      tag: 3.14.0-arsenic
+    resources:
+      requests:
+        # -- Selenium Grid Hub request memory resources
+        memory: 750Mi
+        # -- Selenium Grid Hub request cpu resources
+        cpu: 200m
+      limits:
+        # -- Selenium Grid Hub limits memory resources
+        memory: 1250Mi
+        # -- Selenium Grid Hub limits cpu resources
+        cpu: 800m
+    ports:
+      # -- Port Selenium Grid Hub will be served at
+      service: 4444
+    livenessProbe:
+      # -- enables Selenium Grid Hub pods liveness probe
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 30
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+    readinessProbe:
+      # -- enables Selenium Grid Hub pods readiness probe
+      enabled: true
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      timeoutSeconds: 5
+      failureThreshold: 6
+      successThreshold: 1
+  chrome:
+    image:
+      repository: selenium/node-chrome
+      tag: 3.14.0-arsenic
+    resources:
+      requests:
+        # -- Selenium Grid Node request memory resources
+        memory: 500Mi
+        # -- Selenium Grid Node request cpu resources
+        cpu: 250m
+      limits:
+        # -- Selenium Grid Node limits memory resources
+        memory: 1250Mi
+        # -- Selenium Grid Node limits cpu resources
+        cpu: 750m
+    livenessProbe:
+      # -- enables Selenium Grid Node pods liveness probe
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 30
+      timeoutSeconds: 5
+      failureThreshold: 2
+      successThreshold: 1
+    readinessProbe:
+      # -- enables Selenium Grid Node pods readiness probe
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 30
+      timeoutSeconds: 5
+      failureThreshold: 2
+      successThreshold: 1
+    configs:
+      # -- number of instances of same version of browser that can run in node
+      maxInstancesPerNode: 1
+      # -- number of browsers (Any browser and version) that can run in parallel at a time in node, overrides max instances settings by restricting the number of browser instances that can run in parallel
+      maxSessionsPerNode: 1
+
+# MongoDB configuration, see https://github.com/bitnami/charts/tree/master/bitnami/mongodb#parameters for more details
+mongodb:
+  auth:
+    enabled: false
+  strategyType: Recreate
+  nameOverride: aet-mongodb
+  labels:
+    app.kubernetes.io/name: mongo
+    app.kubernetes.io/instance: mongo-aet
+    app.kubernetes.io/version: "3.6"
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: aet
+    app.kubernetes.io/managed-by: kubectl
+  service:
+    port: 27017
+  resources:
+    limits:
+      memory: 2Gi
+      cpu: 1000m
+    requests:
+      memory: 512Mi
+      cpu: 500m
+  arbiter:
+    enabled: false
+  image:
+    tag: "3.6"
+  persistence:
+    size: 2Gi
+
+# ingress configuration
+ingress:
+  # -- enables ingress
+  enabled: false  
+  # -- if `host` is not set, this value will be used as ingress's spec rules host - use e.g. nip.io to have a working alias for your instance
+  localDnsMapping: aet-127.0.0.1.nip.io
+  # -- ingress's spec rules host, supersedes `localDnsMapping`
+  host: ''
+  # -- ingress annotations
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"

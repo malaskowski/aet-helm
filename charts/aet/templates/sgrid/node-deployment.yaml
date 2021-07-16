@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-chrome
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-chrome
+    app.kubernetes.io/instance: {{ .Release.Name }}-chrome
+    app.kubernetes.io/version: 3.14.0-arsenic
+    app.kubernetes.io/component: selenium-grid
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "aet-helm.name" . }}-chrome
+      app.kubernetes.io/instance: {{ .Release.Name }}-chrome
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "aet-helm.name" . }}-chrome
+        app.kubernetes.io/instance: {{ .Release.Name }}-chrome
+    spec:
+      containers:
+        - name: chrome
+          image: {{ .Values.sgrid.chrome.image.repository }}:{{ .Values.sgrid.chrome.image.tag }}
+          resources:
+            requests:
+              memory: {{ .Values.sgrid.chrome.resources.requests.memory }}
+              cpu: {{ .Values.sgrid.chrome.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.sgrid.chrome.resources.limits.memory }}
+              cpu: {{ .Values.sgrid.chrome.resources.limits.cpu }}
+          env:
+            - name: HUB_HOST
+              value: "{{ include "aet-helm.fullname" . }}-hub"
+            - name: HUB_PORT
+              value: "{{ .Values.sgrid.hub.ports.service }}"
+            - name: NODE_MAX_INSTANCES
+              value: "{{ .Values.sgrid.chrome.configs.maxInstancesPerNode }}"
+            - name: NODE_MAX_SESSION
+              value: "{{ .Values.sgrid.chrome.configs.maxSessionsPerNode }}"
+          ports:
+            - containerPort: 5555
+          {{- if .Values.sgrid.chrome.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.sgrid.chrome.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.sgrid.chrome.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.sgrid.chrome.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.sgrid.chrome.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.sgrid.chrome.livenessProbe.successThreshold }}
+            httpGet:
+              path: /wd/hub/status
+              port: 5555
+          {{- end }}
+          {{- if .Values.sgrid.chrome.readinessProbe.enabled }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.sgrid.chrome.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.sgrid.chrome.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.sgrid.chrome.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.sgrid.chrome.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.sgrid.chrome.readinessProbe.successThreshold }}
+            httpGet:
+              path: /wd/hub/status
+              port: 5555
+          {{- end }}
+          volumeMounts:
+            - name: chrome-storage
+              mountPath: /dev/shm
+      volumes:
+        - name: chrome-storage
+          hostPath:
+            path: /dev/shm

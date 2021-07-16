@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-browsermob
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-browsermob
+    app.kubernetes.io/instance: {{ .Release.Name }}-browsermob
+    app.kubernetes.io/version: 2.1.4
+    app.kubernetes.io/component: proxy-server
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "aet-helm.name" . }}-browsermob
+      app.kubernetes.io/instance: {{ .Release.Name }}-browsermob
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "aet-helm.name" . }}-browsermob
+        app.kubernetes.io/instance: {{ .Release.Name }}-browsermob
+    spec:
+      containers:
+        - name: browsermob
+          image: {{ .Values.browsermob.image.repository }}:{{ .Values.browsermob.image.tag | default .Values.aetDockerTag }}
+          resources:
+            requests:
+              memory: {{ .Values.browsermob.resources.requests.memory }}
+              cpu: {{ .Values.browsermob.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.browsermob.resources.limits.memory }}
+              cpu: {{ .Values.browsermob.resources.limits.cpu }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: BMP_PROXY_PORT_RANGE
+              value: "{{ include "aet-helm.proxyPortRange" . }}"
+          {{- if .Values.browsermob.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.browsermob.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.browsermob.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.browsermob.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.browsermob.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.browsermob.livenessProbe.successThreshold }}
+            httpGet:
+              path: /proxy
+              port: 8080
+              scheme: HTTP
+          {{- end }}
+          {{- if .Values.browsermob.readinessProbe.enabled }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.browsermob.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.browsermob.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.browsermob.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.browsermob.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.browsermob.readinessProbe.successThreshold }}
+            httpGet:
+              path: /proxy
+              port: 8080
+              scheme: HTTP
+          {{- end }}

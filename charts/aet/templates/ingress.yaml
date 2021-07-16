@@ -1,0 +1,58 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-ingress
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-ingress
+    app.kubernetes.io/instance: {{ .Release.Name }}-ingress
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: ingress
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- if .Values.ingress.host }}
+    - host: {{ .Values.ingress.host }}
+    {{- else }}
+    - host: {{ .Values.ingress.localDnsMapping }}
+    {{- end }}
+      http:
+        paths:
+          - path: /system
+            backend:
+              serviceName: {{ include "aet-helm.fullname" . }}-karaf
+              servicePort: {{ .Values.karaf.ports.osgi }}
+          - path: /api
+            backend:
+              serviceName: {{ include "aet-helm.fullname" . }}-karaf
+              servicePort: {{ .Values.karaf.ports.osgi }}
+          - path: /lock
+            backend:
+              serviceName: {{ include "aet-helm.fullname" . }}-karaf
+              servicePort: {{ .Values.karaf.ports.osgi }}
+          - path: /configs
+            backend:
+              serviceName: {{ include "aet-helm.fullname" . }}-karaf
+              servicePort: {{ .Values.karaf.ports.osgi }}
+          - path: /xunit
+            backend:
+              serviceName: {{ include "aet-helm.fullname" . }}-karaf
+              servicePort: {{ .Values.karaf.ports.osgi }}
+          - path: /suite
+            backend:
+              serviceName: {{ include "aet-helm.fullname" . }}-karaf
+              servicePort: {{ .Values.karaf.ports.osgi }}
+          - path: /suitestatus
+            backend:
+              serviceName: {{ include "aet-helm.fullname" . }}-karaf
+              servicePort: {{ .Values.karaf.ports.osgi }}
+          - path: /
+            backend:
+              serviceName: {{ include "aet-helm.fullname" . }}-report
+              servicePort: {{ .Values.report.ports.service }}
+{{- end }}

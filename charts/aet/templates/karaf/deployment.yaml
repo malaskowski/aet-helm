@@ -1,0 +1,109 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-karaf
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-karaf
+    app.kubernetes.io/instance: {{ .Release.Name }}-karaf
+    app.kubernetes.io/version: 4.2.0
+    app.kubernetes.io/aet-version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: osgi-runtime
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "aet-helm.name" . }}-karaf
+      app.kubernetes.io/instance: {{ .Release.Name }}-karaf
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "aet-helm.name" . }}-karaf
+        app.kubernetes.io/instance: {{ .Release.Name }}-karaf
+    spec:
+      containers:
+        - name: karaf
+          image: {{ .Values.karaf.image.repository }}:{{ .Values.karaf.image.tag | default .Values.aetDockerTag }}
+          resources:
+            requests:
+              memory: {{ .Values.karaf.resources.requests.memory }}
+              cpu: {{ .Values.karaf.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.karaf.resources.limits.memory }}
+              cpu: {{ .Values.karaf.resources.limits.cpu }}
+          ports:
+            - containerPort: 8181
+          env:
+            - name: JAVA_MAX_MEM
+              value: {{ .Values.karaf.env.javaMaxMem }}
+          {{- if .Values.karaf.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.karaf.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.karaf.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.karaf.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.karaf.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.karaf.livenessProbe.successThreshold }}
+            httpGet:
+              path: /health-check
+              port: 8181
+              scheme: HTTP
+          {{- end }}
+          {{- if .Values.karaf.readinessProbe.enabled }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.karaf.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.karaf.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.karaf.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.karaf.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.karaf.readinessProbe.successThreshold }}
+            httpGet:
+              path: /health-check
+              port: 8181
+              scheme: HTTP
+          {{- end }}
+          volumeMounts:
+            - name: configs
+              mountPath: /aet/custom/configs
+      volumes:
+        - name: tmp
+          configMap:
+            name: {{ include "aet-helm.fullname" . }}-karaf-configs
+        - name: configs
+          emptyDir: {}
+      initContainers:
+        - name: init-osgi-configs
+          image: busybox
+          command:
+            - sh
+            - '-c'
+            - cp -r /tmp-configs/..data/*.cfg /aet/custom/configs; chmod -R 777 /aet/custom/configs/; exit 0
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp-configs
+            - name: configs
+              mountPath: /aet/custom/configs
+        {{- if .Values.karaf.initContainers.waitForHub }}
+        - name: init-hub
+          image: busybox
+          command:
+            - sh
+            - '-c'
+            - for i in $(seq 1 {{ .Values.karaf.initContainers.initTimeoutSeconds }}); do if nc -zv -w 1 {{ include "aet-helm.fullname" . }}-hub {{ .Values.sgrid.hub.ports.service }}; then exit 0; fi; done; exit 1
+        {{- end}}
+        {{- if .Values.karaf.initContainers.waitForMongo }}
+        - name: init-mongo
+          image: busybox
+          command:
+            - sh
+            - '-c'
+            - for i in $(seq 1 {{ .Values.karaf.initContainers.initTimeoutSeconds }}); do if nc -zv -w 1 {{ include "aet-helm.fullname" . }}-mongodb {{ .Values.mongodb.service.port }}; then exit 0; fi; done; exit 1
+        {{- end}}
+        {{- if .Values.karaf.initContainers.waitForActivemq }}
+        - name: init-activemq
+          image: busybox
+          command:
+            - sh
+            - '-c'
+            - for i in $(seq 1 {{ .Values.karaf.initContainers.initTimeoutSeconds }}); do if nc -zv -w 1 {{ include "aet-helm.fullname" . }}-activemq {{ .Values.activemq.ports.adminPanelPort }}; then exit 0; fi; done; exit 1
+        {{- end}}

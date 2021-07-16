@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-activemq
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-activemq
+    app.kubernetes.io/instance: {{ .Release.Name }}-activemq
+    app.kubernetes.io/version: 5.15.2
+    app.kubernetes.io/component: jms-server
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "aet-helm.name" . }}-activemq
+      app.kubernetes.io/instance: {{ .Release.Name }}-activemq
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "aet-helm.name" . }}-activemq
+        app.kubernetes.io/instance: {{ .Release.Name }}-activemq
+    spec:
+      containers:
+        - name: activemq
+          image: {{ .Values.activemq.image.repository }}:{{ .Values.activemq.image.tag | default .Values.aetDockerTag }}
+          resources:
+            requests:
+              memory: {{ .Values.activemq.resources.requests.memory }}
+              cpu: {{ .Values.activemq.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.activemq.resources.limits.memory }}
+              cpu: {{ .Values.activemq.resources.limits.cpu }}
+          ports:
+            - containerPort: 8161
+              name: admin-panel
+            - containerPort: 11199
+              name: jmx
+            - containerPort: 61616
+              name: broker-service
+          {{- if .Values.activemq.livenessProbe.enabled }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.activemq.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.activemq.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.activemq.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.activemq.livenessProbe.failureThreshold }}
+            successThreshold: {{ .Values.activemq.livenessProbe.successThreshold }}
+            tcpSocket:
+              port: 61616
+          {{- end }}
+          {{- if .Values.activemq.readinessProbe.enabled }}
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.activemq.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.activemq.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.activemq.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.activemq.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.activemq.readinessProbe.successThreshold }}
+            tcpSocket:
+              port: 61616
+          {{- end }}

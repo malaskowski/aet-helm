@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-activemq
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-activemq
+    app.kubernetes.io/instance: {{ .Release.Name }}-activemq
+    app.kubernetes.io/version: 5.15.2
+    app.kubernetes.io/component: jms-server
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-activemq
+    app.kubernetes.io/instance: {{ .Release.Name }}-activemq
+  ports:
+    - name: jmx
+      port: {{ .Values.activemq.ports.jmxPort }}
+      targetPort: 11199
+    - name: broker-service
+      port: {{ .Values.activemq.ports.brokerServicePort }}
+      targetPort: 61616
+    - name: admin-panel
+      port: {{ .Values.activemq.ports.adminPanelPort }}
+      targetPort: 8161

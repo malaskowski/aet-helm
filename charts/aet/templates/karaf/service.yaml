@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "aet-helm.fullname" . }}-karaf
+  labels:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-karaf
+    app.kubernetes.io/instance: {{ .Release.Name }}-karaf
+    app.kubernetes.io/version: 4.2.0
+    app.kubernetes.io/aet-version: {{ .Chart.AppVersion }}
+    app.kubernetes.io/component: osgi-runtime
+    app.kubernetes.io/part-of: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  selector:
+    app.kubernetes.io/name: {{ include "aet-helm.name" . }}-karaf
+    app.kubernetes.io/instance: {{ .Release.Name }}-karaf
+  ports:
+    - port: {{ .Values.karaf.ports.osgi }}
+      targetPort: 8181
