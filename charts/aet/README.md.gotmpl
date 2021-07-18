@@ -54,6 +54,7 @@ The command removes all the Kubernetes components associated with the chart and 
 {{ template "chart.requirementsSection" . }}
 
 This chart depends on [Bitnami MongoDB chart](https://github.com/bitnami/charts/tree/master/bitnami/mongodb).
+By default settings of this chart, MongoDB runs in `standalone` mode as Statefull Set and RollingUpdate.
 
 ## Development
 
@@ -65,4 +66,5 @@ Your AET instance domain should be `http://aet-127.0.0.1.nip.io/`
 
 ## Improvements (help wanted)
 - [ ] upgrade ingress apiVersion
+- [ ] scale AET capacity with one property (currently you need to update number of browsers, collectors and queue settings)
 - [ ] prepare guide on how to install it on AWS/Azure/GCP

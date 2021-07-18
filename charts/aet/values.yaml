@@ -285,7 +285,9 @@ sgrid:
 mongodb:
   auth:
     enabled: false
-  strategyType: Recreate
+  architecture: standalone
+  useStatefulSet: true
+  strategyType: RollingUpdate
   nameOverride: aet-mongodb
   labels:
     app.kubernetes.io/name: mongo
