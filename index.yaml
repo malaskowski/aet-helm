@@ -3,6 +3,23 @@ entries:
   aet:
   - apiVersion: v2
     appVersion: 3.3.0
+    created: "2021-07-18T18:38:34.230882811Z"
+    dependencies:
+    - name: mongodb
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.20.0
+    description: This chart bootstraps an [AET](https://github.com/wttech/aet) deployment
+      on a [Kubernetes](http://kubernetes.io/) cluster using the [Helm](https://helm.sh/)
+      package manager.
+    digest: afac3eab62559d2c4459fd1a1975eb8903ee64b44afd918c81a0b74f2b1652f0
+    icon: https://raw.githubusercontent.com/Skejven/aet-docker/master/misc/aet-docker.png
+    name: aet
+    type: application
+    urls:
+    - https://github.com/malaskowski/aet-helm/releases/download/aet-0.2.0/aet-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
+    appVersion: 3.3.0
     created: "2021-07-16T15:03:59.281589643Z"
     dependencies:
     - name: mongodb
@@ -18,4 +35,4 @@ entries:
     urls:
     - https://github.com/malaskowski/aet-helm/releases/download/aet-0.1.0/aet-0.1.0.tgz
     version: 0.1.0
-generated: "2021-07-16T15:03:59.281605044Z"
+generated: "2021-07-18T18:38:34.230900712Z"
