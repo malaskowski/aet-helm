@@ -1,5 +1,5 @@
 # AET Helm chart
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/malaskowski/aet-helm/main/misc/aet-helm.png" alt="AET Helm Logo"/>
@@ -137,6 +137,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | karaf.resources.requests.cpu | string | `"750m"` | Karaf request cpu resources |
 | karaf.resources.requests.memory | string | `"1500Mi"` | Karaf request memory resources |
 | mongodb.arbiter.enabled | bool | `false` |  |
+| mongodb.architecture | string | `"standalone"` |  |
 | mongodb.auth.enabled | bool | `false` |  |
 | mongodb.image.tag | string | `"3.6"` |  |
 | mongodb.labels."app.kubernetes.io/component" | string | `"database"` |  |
@@ -152,7 +153,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | mongodb.resources.requests.cpu | string | `"500m"` |  |
 | mongodb.resources.requests.memory | string | `"512Mi"` |  |
 | mongodb.service.port | int | `27017` |  |
-| mongodb.strategyType | string | `"Recreate"` |  |
+| mongodb.strategyType | string | `"RollingUpdate"` |  |
+| mongodb.useStatefulSet | bool | `true` |  |
 | report.image.repository | string | `"skejven/aet_report"` | image repository for Reports |
 | report.image.tag | string | `nil` | Reports image tag, overrides `aetDockerTag` |
 | report.livenessProbe.enabled | bool | `true` | enables Reports pods liveness probe |
@@ -219,6 +221,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | https://charts.bitnami.com/bitnami | mongodb | 10.20.0 |
 
 This chart depends on [Bitnami MongoDB chart](https://github.com/bitnami/charts/tree/master/bitnami/mongodb).
+By default settings of this chart, MongoDB runs in `standalone` mode as Statefull Set and RollingUpdate.
 
 ## Development
 
@@ -230,4 +233,5 @@ Your AET instance domain should be `http://aet-127.0.0.1.nip.io/`
 
 ## Improvements (help wanted)
 - [ ] upgrade ingress apiVersion
+- [ ] scale AET capacity with one property (currently you need to update number of browsers, collectors and queue settings)
 - [ ] prepare guide on how to install it on AWS/Azure/GCP
