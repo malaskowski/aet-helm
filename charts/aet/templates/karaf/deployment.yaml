@@ -97,7 +97,7 @@ spec:
           command:
             - sh
             - '-c'
-            - for i in $(seq 1 {{ .Values.karaf.initContainers.initTimeoutSeconds }}); do if nc -zv -w 1 {{ include "aet-helm.fullname" . }}-aet-mongodb {{ .Values.mongodb.service.port }}; then exit 0; fi; done; exit 1
+            - for i in $(seq 1 {{ .Values.karaf.initContainers.initTimeoutSeconds }}); do if nc -zv -w 1 {{ include "aet-helm.fullname" . }}-mongodb {{ .Values.mongodb.service.port }}; then exit 0; fi; done; exit 1
         {{- end}}
         {{- if .Values.karaf.initContainers.waitForActivemq }}
         - name: init-activemq

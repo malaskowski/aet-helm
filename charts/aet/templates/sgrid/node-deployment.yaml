@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/part-of: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  replicas: 4
+  replicas: {{ .Values.sgrid.chrome.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "aet-helm.name" . }}-chrome

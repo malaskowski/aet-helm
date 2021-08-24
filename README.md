@@ -1,5 +1,5 @@
 # AET Helm chart
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/malaskowski/aet-helm/main/misc/aet-helm.png" alt="AET Helm Logo"/>
@@ -51,7 +51,7 @@ The command removes all the Kubernetes components associated with the chart and 
 ## Parameters
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| activemq.image.repository | string | `"skejven/aet_activemq"` | image repository for ActiveMQ |
+| activemq.image.repository | string | `"malaskowski/aet_activemq"` | image repository for ActiveMQ |
 | activemq.image.tag | string | `nil` | ActiveMQ image tag, overrides `aetDockerTag` |
 | activemq.livenessProbe.enabled | bool | `true` | enables ActiveMQ pods liveness probe |
 | activemq.livenessProbe.failureThreshold | int | `6` |  |
@@ -72,8 +72,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | activemq.resources.limits.memory | string | `"150Mi"` | ActiveMQ limits memory resources |
 | activemq.resources.requests.cpu | string | `"100m"` | ActiveMQ request cpu resources |
 | activemq.resources.requests.memory | string | `"120Mi"` | ActiveMQ request memory resources |
-| aetDockerTag | string | `"0.14.0"` | default version of AET images used to run the instance |
-| browsermob.image.repository | string | `"skejven/aet_browsermob"` | image repository for Browsermob Proxy |
+| aetDockerTag | string | `"1.0.0"` | default version of AET images used to run the instance |
+| browsermob.image.repository | string | `"malaskowski/aet_browsermob"` | image repository for Browsermob Proxy |
 | browsermob.image.tag | string | `nil` | Browsermob image tag, overrides `aetDockerTag` |
 | browsermob.livenessProbe.enabled | bool | `true` | enables Browsermob pods liveness probe |
 | browsermob.livenessProbe.failureThreshold | int | `6` |  |
@@ -94,7 +94,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | browsermob.resources.limits.memory | string | `"300Mi"` | Browsermob limits memory resources |
 | browsermob.resources.requests.cpu | string | `"100m"` | Browsermob request cpu resources |
 | browsermob.resources.requests.memory | string | `"200Mi"` | Browsermob request memory resources |
-| ingress.annotations | object | `{}` | ingress annotations |
+| ingress.annotations | object | `{"nginx.ingress.kubernetes.io/rewrite-target":"/"}` | ingress annotations |
 | ingress.enabled | bool | `false` | enables ingress |
 | ingress.host | string | `""` | ingress's spec rules host, supersedes `localDnsMapping` |
 | ingress.localDnsMapping | string | `"aet-127.0.0.1.nip.io"` | if `host` is not set, this value will be used as ingress's spec rules host - use e.g. nip.io to have a working alias for your instance |
@@ -113,7 +113,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | karaf.configs.workers.comparatorInstancesNo | int | `5` |  |
 | karaf.configs.workers.comparatorPrefetchSize | int | `1` |  |
 | karaf.env.javaMaxMem | string | `"2048m"` |  |
-| karaf.image.repository | string | `"skejven/aet_karaf"` | image repository for Apache Karaf |
+| karaf.image.repository | string | `"malaskowski/aet_karaf"` | image repository for Apache Karaf |
 | karaf.image.tag | string | `nil` | Karaf image tag, overrides `aetDockerTag` |
 | karaf.initContainers.initTimeoutSeconds | int | `120` | time after which init checks for hub, mongo and activemq will timeout if not found in network |
 | karaf.initContainers.waitForActivemq | bool | `true` | enables waiting for ActiveMq to be available before running the main Karaf conainer |
@@ -155,7 +155,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | mongodb.service.port | int | `27017` |  |
 | mongodb.strategyType | string | `"RollingUpdate"` |  |
 | mongodb.useStatefulSet | bool | `true` |  |
-| report.image.repository | string | `"skejven/aet_report"` | image repository for Reports |
+| report.image.repository | string | `"malaskowski/aet_report"` | image repository for Reports |
 | report.image.tag | string | `nil` | Reports image tag, overrides `aetDockerTag` |
 | report.livenessProbe.enabled | bool | `true` | enables Reports pods liveness probe |
 | report.livenessProbe.failureThreshold | int | `2` |  |
@@ -190,6 +190,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sgrid.chrome.readinessProbe.periodSeconds | int | `30` |  |
 | sgrid.chrome.readinessProbe.successThreshold | int | `1` |  |
 | sgrid.chrome.readinessProbe.timeoutSeconds | int | `5` |  |
+| sgrid.chrome.replicas | int | `4` | configure number of replicas of chrome replicas |
 | sgrid.chrome.resources.limits.cpu | string | `"750m"` | Selenium Grid Node limits cpu resources |
 | sgrid.chrome.resources.limits.memory | string | `"1250Mi"` | Selenium Grid Node limits memory resources |
 | sgrid.chrome.resources.requests.cpu | string | `"250m"` | Selenium Grid Node request cpu resources |
@@ -232,6 +233,5 @@ By default settings of this chart, MongoDB runs in `standalone` mode as Stateful
 Your AET instance domain should be `http://aet-127.0.0.1.nip.io/`
 
 ## Improvements (help wanted)
-- [ ] upgrade ingress apiVersion
 - [ ] scale AET capacity with one property (currently you need to update number of browsers, collectors and queue settings)
 - [ ] prepare guide on how to install it on AWS/Azure/GCP

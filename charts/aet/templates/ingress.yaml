@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "aet-helm.fullname" . }}-ingress
@@ -24,35 +24,59 @@ spec:
       http:
         paths:
           - path: /system
+            pathType: Prefix
             backend:
-              serviceName: {{ include "aet-helm.fullname" . }}-karaf
-              servicePort: {{ .Values.karaf.ports.osgi }}
+              service:
+                name: {{ include "aet-helm.fullname" . }}-karaf
+                port: 
+                  number: {{ .Values.karaf.ports.osgi }}
           - path: /api
+            pathType: Prefix
             backend:
-              serviceName: {{ include "aet-helm.fullname" . }}-karaf
-              servicePort: {{ .Values.karaf.ports.osgi }}
+              service:
+                name: {{ include "aet-helm.fullname" . }}-karaf
+                port: 
+                  number: {{ .Values.karaf.ports.osgi }}
           - path: /lock
+            pathType: Prefix
             backend:
-              serviceName: {{ include "aet-helm.fullname" . }}-karaf
-              servicePort: {{ .Values.karaf.ports.osgi }}
+              service:
+                name: {{ include "aet-helm.fullname" . }}-karaf
+                port: 
+                  number: {{ .Values.karaf.ports.osgi }}
           - path: /configs
+            pathType: Prefix
             backend:
-              serviceName: {{ include "aet-helm.fullname" . }}-karaf
-              servicePort: {{ .Values.karaf.ports.osgi }}
+              service:
+                name: {{ include "aet-helm.fullname" . }}-karaf
+                port: 
+                  number: {{ .Values.karaf.ports.osgi }}
           - path: /xunit
+            pathType: Prefix
             backend:
-              serviceName: {{ include "aet-helm.fullname" . }}-karaf
-              servicePort: {{ .Values.karaf.ports.osgi }}
+              service:
+                name: {{ include "aet-helm.fullname" . }}-karaf
+                port: 
+                  number: {{ .Values.karaf.ports.osgi }}
           - path: /suite
+            pathType: Prefix
             backend:
-              serviceName: {{ include "aet-helm.fullname" . }}-karaf
-              servicePort: {{ .Values.karaf.ports.osgi }}
+              service:
+                name: {{ include "aet-helm.fullname" . }}-karaf
+                port: 
+                  number: {{ .Values.karaf.ports.osgi }}
           - path: /suitestatus
+            pathType: Prefix
             backend:
-              serviceName: {{ include "aet-helm.fullname" . }}-karaf
-              servicePort: {{ .Values.karaf.ports.osgi }}
+              service:
+                name: {{ include "aet-helm.fullname" . }}-karaf
+                port: 
+                  number: {{ .Values.karaf.ports.osgi }}
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: {{ include "aet-helm.fullname" . }}-report
-              servicePort: {{ .Values.report.ports.service }}
+              service:
+                name: {{ include "aet-helm.fullname" . }}-report
+                port: 
+                  number: {{ .Values.report.ports.service }}
 {{- end }}
