@@ -39,7 +39,7 @@ data:
     maxMessagesInCollectorQueue={{ .Values.karaf.configs.runner.maxMessagesInCollectorQueue }}
     maxConcurrentSuitesCount={{ .Values.karaf.configs.runner.maxConcurrentSuitesCount }}
   com.cognifide.aet.vs.mongodb.MongoDBClient.cfg: |
-    mongoURI=mongodb://{{ include "aet-helm.fullname" . }}-mongodb
+    mongoURI=mongodb://{{ .Release.Name }}-mongodb
     allowAutoCreate=true
   com.cognifide.aet.worker.drivers.chrome.ChromeWebDriverFactory.cfg: |
     name = "chrome"

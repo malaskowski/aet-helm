@@ -290,10 +290,9 @@ mongodb:
   architecture: standalone
   useStatefulSet: true
   strategyType: RollingUpdate
-  nameOverride: aet-mongodb
   labels:
-    app.kubernetes.io/name: mongo
-    app.kubernetes.io/instance: mongo-aet
+    app.kubernetes.io/name: mongodb
+    app.kubernetes.io/instance: mongodb-aet
     app.kubernetes.io/version: "3.6"
     app.kubernetes.io/component: database
     app.kubernetes.io/part-of: aet
