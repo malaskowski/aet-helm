@@ -323,5 +323,5 @@ ingress:
   host: ''
   # -- ingress annotations
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    # nginx.ingress.kubernetes.io/rewrite-target: /
     # kubernetes.io/ingress.class: nginx

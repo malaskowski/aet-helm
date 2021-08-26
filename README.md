@@ -1,5 +1,5 @@
 # AET Helm chart
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
+![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/malaskowski/aet-helm/main/misc/aet-helm.png" alt="AET Helm Logo"/>
@@ -94,7 +94,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | browsermob.resources.limits.memory | string | `"300Mi"` | Browsermob limits memory resources |
 | browsermob.resources.requests.cpu | string | `"100m"` | Browsermob request cpu resources |
 | browsermob.resources.requests.memory | string | `"200Mi"` | Browsermob request memory resources |
-| ingress.annotations | object | `{"nginx.ingress.kubernetes.io/rewrite-target":"/"}` | ingress annotations |
+| ingress.annotations | string | `nil` | ingress annotations |
 | ingress.enabled | bool | `false` | enables ingress |
 | ingress.host | string | `""` | ingress's spec rules host, supersedes `localDnsMapping` |
 | ingress.localDnsMapping | string | `"aet-127.0.0.1.nip.io"` | if `host` is not set, this value will be used as ingress's spec rules host - use e.g. nip.io to have a working alias for your instance |
@@ -141,12 +141,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | mongodb.auth.enabled | bool | `false` |  |
 | mongodb.image.tag | string | `"3.6"` |  |
 | mongodb.labels."app.kubernetes.io/component" | string | `"database"` |  |
-| mongodb.labels."app.kubernetes.io/instance" | string | `"mongo-aet"` |  |
+| mongodb.labels."app.kubernetes.io/instance" | string | `"mongodb-aet"` |  |
 | mongodb.labels."app.kubernetes.io/managed-by" | string | `"kubectl"` |  |
-| mongodb.labels."app.kubernetes.io/name" | string | `"mongo"` |  |
+| mongodb.labels."app.kubernetes.io/name" | string | `"mongodb"` |  |
 | mongodb.labels."app.kubernetes.io/part-of" | string | `"aet"` |  |
 | mongodb.labels."app.kubernetes.io/version" | string | `"3.6"` |  |
-| mongodb.nameOverride | string | `"aet-mongodb"` |  |
 | mongodb.persistence.size | string | `"2Gi"` |  |
 | mongodb.resources.limits.cpu | string | `"1000m"` |  |
 | mongodb.resources.limits.memory | string | `"2Gi"` |  |
