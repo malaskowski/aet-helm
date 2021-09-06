@@ -1,3 +1,4 @@
+{{- if .Values.sgrid.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -55,3 +56,4 @@ spec:
               path: /wd/hub/status
               port: 4444
           {{- end }}
+{{- end }}

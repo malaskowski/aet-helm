@@ -1,5 +1,5 @@
 # AET Helm chart
-![Version: 0.3.1](https://img.shields.io/badge/Version-0.3.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/malaskowski/aet-helm/main/misc/aet-helm.png" alt="AET Helm Logo"/>
@@ -68,8 +68,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | activemq.readinessProbe.periodSeconds | int | `10` |  |
 | activemq.readinessProbe.successThreshold | int | `1` |  |
 | activemq.readinessProbe.timeoutSeconds | int | `5` |  |
-| activemq.resources.limits.cpu | string | `"150m"` | ActiveMQ limits cpu resources |
-| activemq.resources.limits.memory | string | `"150Mi"` | ActiveMQ limits memory resources |
+| activemq.resources.limits.cpu | string | `"250m"` | ActiveMQ limits cpu resources |
+| activemq.resources.limits.memory | string | `"250Mi"` | ActiveMQ limits memory resources |
 | activemq.resources.requests.cpu | string | `"100m"` | ActiveMQ request cpu resources |
 | activemq.resources.requests.memory | string | `"120Mi"` | ActiveMQ request memory resources |
 | aetDockerTag | string | `"1.0.0"` | default version of AET images used to run the instance |
@@ -94,7 +94,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | browsermob.resources.limits.memory | string | `"300Mi"` | Browsermob limits memory resources |
 | browsermob.resources.requests.cpu | string | `"100m"` | Browsermob request cpu resources |
 | browsermob.resources.requests.memory | string | `"200Mi"` | Browsermob request memory resources |
-| ingress.annotations | string | `nil` | ingress annotations |
+| ingress.annotations | object | `{"kubernetes.io/ingress.class":"nginx"}` | ingress annotations |
 | ingress.enabled | bool | `false` | enables ingress |
 | ingress.host | string | `""` | ingress's spec rules host, supersedes `localDnsMapping` |
 | ingress.localDnsMapping | string | `"aet-127.0.0.1.nip.io"` | if `host` is not set, this value will be used as ingress's spec rules host - use e.g. nip.io to have a working alias for your instance |
@@ -103,6 +103,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | karaf.configs.cleaner.removeOlderThan | int | `4` |  |
 | karaf.configs.cleaner.schedule | string | `"0 0 22 ? * *"` |  |
 | karaf.configs.database.allowAutoCreate | bool | `true` | allows creating new databases by AET (no need to create them manually first, including indexes) |
+| karaf.configs.externalSeleniumHubUrl | string | `""` | configures external Selenium Hub url including port (e.g. `http://<<Selenium-Hub-DNS>>:4444` ) |
 | karaf.configs.runner.ft | int | `120` | Time in seconds, after which suite processing will be interrupted if no notification was received in duration of this parameter. That means if Runner will be not updated by any collection or comparison result in that time it will decide to force stop suite processing. |
 | karaf.configs.runner.maxConcurrentSuitesCount | int | `2` | Defines the maximum number of suites processed concurrently byt the Runner. If more suites will come to the system, they will be scheduled for later processing. |
 | karaf.configs.runner.maxMessagesInCollectorQueue | int | `4` | Defines the maximum amount of messages in the collector queue. This should be equal the total number of browser sessions provided by Selenium Grid and collector instances. |
@@ -194,6 +195,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | sgrid.chrome.resources.limits.memory | string | `"1250Mi"` | Selenium Grid Node limits memory resources |
 | sgrid.chrome.resources.requests.cpu | string | `"250m"` | Selenium Grid Node request cpu resources |
 | sgrid.chrome.resources.requests.memory | string | `"500Mi"` | Selenium Grid Node request memory resources |
+| sgrid.enabled | bool | `true` | enables Selenium Grid |
 | sgrid.hub.image.repository | string | `"selenium/hub"` |  |
 | sgrid.hub.image.tag | string | `"3.14.0-arsenic"` |  |
 | sgrid.hub.livenessProbe.enabled | bool | `true` | enables Selenium Grid Hub pods liveness probe |
@@ -225,9 +227,11 @@ By default settings of this chart, MongoDB runs in `standalone` mode as Stateful
 
 ## Development
 
+> If you are using default ingress, you should install NginX ingress controller first. Use this [tutorial](https://kubernetes.github.io/ingress-nginx/deploy/).
+
 1. Checkout repo and change directory to `charts/aet`
 2. Build dependencies: `helm dependency build`
-3. Instal AET (locally): `helm install --set ingress.enabled=true local . -n aet --create-namespace`
+3. Install AET (locally): `helm install --set ingress.enabled=true local . -n aet --create-namespace`
 
 Your AET instance domain should be `http://aet-127.0.0.1.nip.io/`
 

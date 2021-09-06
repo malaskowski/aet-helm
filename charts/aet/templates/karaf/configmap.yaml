@@ -43,7 +43,11 @@ data:
     allowAutoCreate=true
   com.cognifide.aet.worker.drivers.chrome.ChromeWebDriverFactory.cfg: |
     name = "chrome"
+    {{ if .Values.karaf.configs.externalSeleniumHubUrl -}}
+    seleniumGridUrl = "{{ .Values.karaf.configs.externalSeleniumHubUrl }}/wd/hub"
+    {{- else -}}
     seleniumGridUrl = "http://{{ include "aet-helm.fullname" . }}-hub:{{ .Values.sgrid.hub.ports.service }}/wd/hub"
+    {{- end }}
     chromeOptions = [ \
       "--disable-plugins", \
       "--headless", \

@@ -24,56 +24,56 @@ spec:
       http:
         paths:
           - path: /system
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "aet-helm.fullname" . }}-karaf
                 port: 
                   number: {{ .Values.karaf.ports.osgi }}
           - path: /api
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "aet-helm.fullname" . }}-karaf
                 port: 
                   number: {{ .Values.karaf.ports.osgi }}
           - path: /lock
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "aet-helm.fullname" . }}-karaf
                 port: 
                   number: {{ .Values.karaf.ports.osgi }}
           - path: /configs
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "aet-helm.fullname" . }}-karaf
                 port: 
                   number: {{ .Values.karaf.ports.osgi }}
           - path: /xunit
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "aet-helm.fullname" . }}-karaf
                 port: 
                   number: {{ .Values.karaf.ports.osgi }}
           - path: /suite
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "aet-helm.fullname" . }}-karaf
                 port: 
                   number: {{ .Values.karaf.ports.osgi }}
           - path: /suitestatus
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "aet-helm.fullname" . }}-karaf
                 port: 
                   number: {{ .Values.karaf.ports.osgi }}
           - path: /
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "aet-helm.fullname" . }}-report

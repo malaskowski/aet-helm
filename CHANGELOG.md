@@ -1,5 +1,7 @@
-# Not released yet
-List of all merged requests that were not released yet.
+# 0.4.0
+- Enabled using external Selenium Grid (see `karaf.configs.externalSeleniumHubUrl`). You may skip running Selenium Grid by setting `sgrid.enabled=false` (which is enabled by default).
+- Nginx Ingress Controller will be used now for local testing purposes.
+- Raised ActiveMQ Deployment limits (CPU `150m` -> `250m`, Memory `150Mi` -> `250Mi`) to fix the initialisation failures.
 
 # 0.3.1
 - Fix mongodb service name logic.

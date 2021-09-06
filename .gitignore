@@ -27,4 +27,4 @@ temp/*
 **/charts/**.tgz
 
 test.sh
-**/full.yaml
+**/full*.yaml

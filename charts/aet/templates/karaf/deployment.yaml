@@ -83,7 +83,7 @@ spec:
               mountPath: /tmp-configs
             - name: configs
               mountPath: /aet/custom/configs
-        {{- if .Values.karaf.initContainers.waitForHub }}
+        {{- if and (.Values.karaf.initContainers.waitForHub) (.Values.sgrid.enabled) }}
         - name: init-hub
           image: busybox
           command:

@@ -58,9 +58,11 @@ By default settings of this chart, MongoDB runs in `standalone` mode as Stateful
 
 ## Development
 
+> If you are using default ingress, you should install NginX ingress controller first. Use this [tutorial](https://kubernetes.github.io/ingress-nginx/deploy/).
+
 1. Checkout repo and change directory to `charts/aet`
 2. Build dependencies: `helm dependency build`
-3. Instal AET (locally): `helm install --set ingress.enabled=true local . -n aet --create-namespace`
+3. Install AET (locally): `helm install --set ingress.enabled=true local . -n aet --create-namespace`
 
 Your AET instance domain should be `http://aet-127.0.0.1.nip.io/`
 

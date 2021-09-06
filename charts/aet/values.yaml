@@ -19,9 +19,9 @@ activemq:
       cpu: 100m
     limits:
       # -- ActiveMQ limits memory resources
-      memory: 150Mi
+      memory: 250Mi
       # -- ActiveMQ limits cpu resources
-      cpu: 150m
+      cpu: 250m
   ports:
     # -- Port ActiveMQ admin panel will be exposed at
     adminPanelPort: 8161
@@ -137,6 +137,8 @@ karaf:
     # -- enables waiting for ActiveMq to be available before running the main Karaf conainer
     waitForActivemq: true
   configs:
+    # -- configures external Selenium Hub url including port (e.g. `http://<<Selenium-Hub-DNS>>:4444` )
+    externalSeleniumHubUrl: ''
     # AET cleaner configs. Read more [here](https://github.com/wttech/aet/wiki/Cleaner).
     cleaner:
       schedule: 0 0 22 ? * *
@@ -210,6 +212,8 @@ report:
 
 # Selenium Grid configuration
 sgrid:
+  # -- enables Selenium Grid
+  enabled: true
   hub:
     image:
       repository: selenium/hub
@@ -316,7 +320,7 @@ mongodb:
 # ingress configuration
 ingress:
   # -- enables ingress
-  enabled: false  
+  enabled: false
   # -- if `host` is not set, this value will be used as ingress's spec rules host - use e.g. nip.io to have a working alias for your instance
   localDnsMapping: aet-127.0.0.1.nip.io
   # -- ingress's spec rules host, supersedes `localDnsMapping`
@@ -324,4 +328,4 @@ ingress:
   # -- ingress annotations
   annotations:
     # nginx.ingress.kubernetes.io/rewrite-target: /
-    # kubernetes.io/ingress.class: nginx
+    kubernetes.io/ingress.class: nginx
