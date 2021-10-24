@@ -137,6 +137,19 @@ karaf:
     # -- enables waiting for ActiveMq to be available before running the main Karaf conainer
     waitForActivemq: true
   configs:
+    # -- list of Chrome capabilities that are passed to Selenium while requesting a browser
+    seleniumChromeOptions:
+      - --disable-plugins
+      - --headless
+      - --hide-scrollbars
+      - --disable-gpu
+      - start-maximized
+      - enable-automation
+      - --no-sandbox
+      - --disable-infobars
+      - --disable-dev-shm-usage
+      - --disable-browser-side-navigation
+      - --dns-prefetch-disable
     # -- configures external Selenium Hub url including port (e.g. `http://<<Selenium-Hub-DNS>>:4444` )
     externalSeleniumHubUrl: ''
     # AET cleaner configs. Read more [here](https://github.com/wttech/aet/wiki/Cleaner).

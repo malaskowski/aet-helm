@@ -1,3 +1,6 @@
+# Not released yet
+- Enable adding custom Chrome options via chart values.
+
 # 0.4.0
 - Enabled using external Selenium Grid (see `karaf.configs.externalSeleniumHubUrl`). You may skip running Selenium Grid by setting `sgrid.enabled=false` (which is enabled by default).
 - Nginx Ingress Controller will be used now for local testing purposes.

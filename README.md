@@ -109,6 +109,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | karaf.configs.runner.maxMessagesInCollectorQueue | int | `4` | Defines the maximum amount of messages in the collector queue. This should be equal the total number of browser sessions provided by Selenium Grid and collector instances. |
 | karaf.configs.runner.mttl | int | `300` | Time in seconds after which messages will be thrown out of queues. |
 | karaf.configs.runner.urlPackageSize | int | `1` | Defines how many urls are being sent in one message. Do not change this value unless you are absolutly certain you know what you do :). |
+| karaf.configs.seleniumChromeOptions | list | `["--disable-plugins","--headless","--hide-scrollbars","--disable-gpu","start-maximized","enable-automation","--no-sandbox","--disable-infobars","--disable-dev-shm-usage","--disable-browser-side-navigation","--dns-prefetch-disable"]` | list of Chrome capabilities that are passed to Selenium while requesting a browser |
 | karaf.configs.workers.collectorInstancesNo | int | `4` |  |
 | karaf.configs.workers.collectorPrefetchSize | int | `1` |  |
 | karaf.configs.workers.comparatorInstancesNo | int | `5` |  |
