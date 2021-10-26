@@ -49,17 +49,9 @@ data:
     seleniumGridUrl = "http://{{ include "aet-helm.fullname" . }}-hub:{{ .Values.sgrid.hub.ports.service }}/wd/hub"
     {{- end }}
     chromeOptions = [ \
-      "--disable-plugins", \
-      "--headless", \
-      "--hide-scrollbars", \
-      "--disable-gpu", \
-      "start-maximized", \
-      "enable-automation", \
-      "--no-sandbox", \
-      "--disable-infobars", \
-      "--disable-dev-shm-usage", \
-      "--disable-browser-side-navigation", \
-      "--dns-prefetch-disable", \
+    {{ range .Values.karaf.configs.seleniumChromeOptions -}}
+      "{{- . -}}", \
+    {{ end -}}
       ]
   com.cognifide.aet.worker.listeners.WorkersListenersService.cfg: |
     collectorPrefetchSize={{ .Values.karaf.configs.workers.collectorPrefetchSize }}
