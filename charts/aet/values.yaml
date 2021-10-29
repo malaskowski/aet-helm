@@ -3,6 +3,8 @@
 
 # -- default version of AET images used to run the instance
 aetDockerTag: 1.0.0
+# -- enables configuring AET collection throughput via single parameters, it will have precedence over karaf and selenium grid values if left not empty
+# aetCollectionThroughput: 10
 
 # ActiveMQ configuration
 activemq:

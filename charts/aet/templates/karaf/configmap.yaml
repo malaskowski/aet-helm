@@ -36,8 +36,8 @@ data:
     ft={{ .Values.karaf.configs.runner.ft }}
     mttl={{ .Values.karaf.configs.runner.mttl }}
     urlPackageSize={{ .Values.karaf.configs.runner.urlPackageSize }}
-    maxMessagesInCollectorQueue={{ .Values.karaf.configs.runner.maxMessagesInCollectorQueue }}
-    maxConcurrentSuitesCount={{ .Values.karaf.configs.runner.maxConcurrentSuitesCount }}
+    maxMessagesInCollectorQueue={{ include "aet-helm.runnerMaxMessagesInCollectorQueue" . }}
+    maxConcurrentSuitesCount={{ include "aet-helm.runnerMaxConcurrentSuitesCount" . }}
   com.cognifide.aet.vs.mongodb.MongoDBClient.cfg: |
     mongoURI=mongodb://{{ .Release.Name }}-mongodb
     allowAutoCreate=true
@@ -55,6 +55,6 @@ data:
       ]
   com.cognifide.aet.worker.listeners.WorkersListenersService.cfg: |
     collectorPrefetchSize={{ .Values.karaf.configs.workers.collectorPrefetchSize }}
-    collectorInstancesNo={{ .Values.karaf.configs.workers.collectorInstancesNo }}
+    collectorInstancesNo={{ include "aet-helm.workerCollectorInstancesNo" . }}
     comparatorPrefetchSize={{ .Values.karaf.configs.workers.comparatorPrefetchSize }}
     comparatorInstancesNo={{ .Values.karaf.configs.workers.comparatorInstancesNo }}
