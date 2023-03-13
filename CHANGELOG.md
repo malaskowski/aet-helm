@@ -1,6 +1,11 @@
 # Not released yet
+In progress...
+
+# 0.5.0
 - [PR-3](https://github.com/malaskowski/aet-helm/pull/3) Enable adding custom Chrome options via chart values.
 - [PR-4](https://github.com/malaskowski/aet-helm/pull/4) Enable configuring AET collection throughput (number of concurrent pages data collected) with one parameter `aetCollectionThroughput`. To keep backward compatibility this param is disabled by default. This will change in the future.
+- Update AET images to version 1.2.0
+- Change MongoDB charts repository to `https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami`
 
 # 0.4.0
 - Enabled using external Selenium Grid (see `karaf.configs.externalSeleniumHubUrl`). You may skip running Selenium Grid by setting `sgrid.enabled=false` (which is enabled by default).

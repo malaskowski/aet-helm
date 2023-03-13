@@ -1,5 +1,5 @@
 # AET Helm chart
-![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
+![Version: 0.5.0](https://img.shields.io/badge/Version-0.5.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 3.3.0](https://img.shields.io/badge/AppVersion-3.3.0-informational?style=flat-square)
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/malaskowski/aet-helm/main/misc/aet-helm.png" alt="AET Helm Logo"/>
@@ -72,7 +72,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | activemq.resources.limits.memory | string | `"250Mi"` | ActiveMQ limits memory resources |
 | activemq.resources.requests.cpu | string | `"100m"` | ActiveMQ request cpu resources |
 | activemq.resources.requests.memory | string | `"120Mi"` | ActiveMQ request memory resources |
-| aetDockerTag | string | `"1.0.0"` | default version of AET images used to run the instance |
+| aetDockerTag | string | `"1.2.0"` | default version of AET images used to run the instance |
 | browsermob.image.repository | string | `"malaskowski/aet_browsermob"` | image repository for Browsermob Proxy |
 | browsermob.image.tag | string | `nil` | Browsermob image tag, overrides `aetDockerTag` |
 | browsermob.livenessProbe.enabled | bool | `true` | enables Browsermob pods liveness probe |
@@ -116,7 +116,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | karaf.configs.workers.comparatorPrefetchSize | int | `1` |  |
 | karaf.env.javaMaxMem | string | `"2048m"` |  |
 | karaf.image.repository | string | `"malaskowski/aet_karaf"` | image repository for Apache Karaf |
-| karaf.image.tag | string | `nil` | Karaf image tag, overrides `aetDockerTag` |
+| karaf.image.tag | string | `nil` | Karaf image tag, overrides `aetDockerTag`, use '-arm64' tags when running on Apple Silicon processors |
 | karaf.initContainers.initTimeoutSeconds | int | `120` | time after which init checks for hub, mongo and activemq will timeout if not found in network |
 | karaf.initContainers.waitForActivemq | bool | `true` | enables waiting for ActiveMq to be available before running the main Karaf conainer |
 | karaf.initContainers.waitForHub | bool | `true` | enables waiting for Selenium Grid Hub to be available before running the main Karaf conainer |
@@ -221,7 +221,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.bitnami.com/bitnami | mongodb | 10.20.0 |
+| https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami | mongodb | 10.20.0 |
 
 This chart depends on [Bitnami MongoDB chart](https://github.com/bitnami/charts/tree/master/bitnami/mongodb).
 By default settings of this chart, MongoDB runs in `standalone` mode as Statefull Set and RollingUpdate.

@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 
 # -- default version of AET images used to run the instance
-aetDockerTag: 1.0.0
+aetDockerTag: 1.2.0
 # -- enables configuring AET collection throughput via single parameters, it will have precedence over karaf and selenium grid values if left not empty
 # aetCollectionThroughput: 10
 
@@ -95,7 +95,7 @@ karaf:
   image:
     # -- image repository for Apache Karaf
     repository: malaskowski/aet_karaf
-    # -- Karaf image tag, overrides `aetDockerTag`
+    # -- Karaf image tag, overrides `aetDockerTag`, use '-arm64' tags when running on Apple Silicon processors
     tag: 
   resources:
     requests:
